@@ -112,7 +112,6 @@ jobs:
             helm upgrade --install sausage-store nexus/sausage-store \
               --version "$CHART_VERSION" \
               --namespace "$SAUSAGE_STORE_NAMESPACE" \
-              --create-namespace \
               --wait \
               --timeout 10m \
               --set-string backend.image="${{ secrets.DOCKER_USER }}/sausage-backend:latest" \
