@@ -102,6 +102,8 @@ spec:
                 secretKeyRef:
                   name: mongodb-secret
                   key: MONGO_REPORTS_PASSWORD
+          resources:
+            {{ toYaml .Values.mongodb.jobResources | indent 12 }}
           command:
             - /bin/sh
             - -ec
