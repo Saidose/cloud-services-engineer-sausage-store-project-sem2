@@ -77,11 +77,9 @@ apiVersion: batch/v1
 kind: Job
 metadata:
   name: mongodb-create-reports-user
-  annotations:
-    helm.sh/hook: "post-install,post-upgrade"
-    helm.sh/hook-weight: "5"
-    helm.sh/hook-delete-policy: before-hook-creation,hook-succeeded
 spec:
+  ttlSecondsAfterFinished: 300
+  backoffLimit: 12
   template:
     spec:
       restartPolicy: OnFailure
@@ -109,6 +107,10 @@ spec:
             - -ec
           args:
             - |
+              until mongosh "mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/admin" --eval "db.adminCommand('ping')" >/dev/null 2>&1; do
+                sleep 5
+              done
+
               mongosh "mongodb://${MONGO_INITDB_ROOT_USERNAME}:${MONGO_INITDB_ROOT_PASSWORD}@mongodb:27017/admin" --eval "
                 db = db.getSiblingDB('${MONGO_REPORTS_DATABASE}');
                 if (db.getUser('${MONGO_REPORTS_USERNAME}') == null) {
