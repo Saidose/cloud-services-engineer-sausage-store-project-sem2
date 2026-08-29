@@ -17,3 +17,6 @@ SELECT floor(1 + random() * 50)::int,
        i,
        1 + floor(random() * 6)::int % 6
 FROM generate_series(1, 10000) s(i);
+
+SELECT setval(pg_get_serial_sequence('product', 'id'), (SELECT max(id) FROM product));
+SELECT setval(pg_get_serial_sequence('orders', 'id'), (SELECT max(id) FROM orders));
